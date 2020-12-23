@@ -1,13 +1,13 @@
 # estimatehydroperiod
 
 1.	Purpose.    
-The purpose of the model is to estimate the water depth and hydroperiod for a point of known elevation in the Ria Formosa lagoon.
+The purpose of the model is to estimate the water depth and hydroperiod for a point of known elevation in the Ria Formosa lagoon (South Portugal).     
 
 2.	Model entities and definitions.    
-This is a deterministic model that calculates the hydroperiod (hydp), defined as the cumulative time (hours) during which the point p is covered by water over a month. Hydroperiod is calculated using estimations of the water depth (dp,t) at a point p and time t, which are, in turn, based on the bed elevation (ep) at point p and the tide height (ht) at time t over 1-min intervals for a month. Hydroperiod can be also expressed as the % of the time in a month during which the point is underwater. The reference month used in this particular application of the model is March 2017, when the field study was conducted.
+This is a deterministic model that calculates the hydroperiod (hydp), defined as the cumulative time (hours) during which the point p is covered by water over a month. Hydroperiod is calculated using estimations of the water depth (dp,t) at a point p and time t, which are, in turn, based on the bed elevation (ep) at point p and the tide height (ht) at time t, over 1-min intervals for a month. Hydroperiod can be also expressed as the % of the time in a month during which the point is underwater. The reference month used in this particular application of the model is March 2017, when the field study was conducted.    
 
 3.	Processes and overview of the code.     
-First, the model interpolates, at intervals of 1 min and for a month, the tidal height based on the official tide chart for the closest reference port to the area where the hydroperiod is to estimate. For our study, we used the tide chart of Faro-Olhão from the Instituto Hidrográfico de Portugal (https://www.hidrografico.pt) for March 2017. Then, an analytical formula is used to calculate water depth based in the tide height at each time t and the elevation at point p:  depth (dp,t) = height (ht)- elevation (ep). The hydroperiod is calculated as the cumulative time over the month for which water depth is greater than 0.
+First, the model interpolates, at intervals of 1 min and for a month, the tidal height based on the official tide chart for the closest reference port to the area where the hydroperiod is to estimate. For our study, we used the tide chart of Faro-Olhão from the Instituto Hidrográfico de Portugal (https://www.hidrografico.pt) for March 2017. Then, an analytical formula is used to calculate water depth based in the tide height at each time t and the elevation at point p:  depth (dp,t) = height (ht)- elevation (ep). The hydroperiod is calculated as the cumulative time over the month for which water depth is greater than 0.    
 
 4.	Inputs.    
 The model requires two datasets as inputs:        
