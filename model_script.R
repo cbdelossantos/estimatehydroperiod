@@ -1,8 +1,8 @@
 #### METADATA ####
-# Objective:          Estimate water depth at a point of known elevation
+# Objective:          Estimate water depth and hydroperiod at a point of known elevation
 # Author:             Carmen B. de los Santos - cbsantos@ualg.pt
 # Creation:           Seville, 27 March 2020
-# Las modification:   Seville, 8 May 2020
+# Last modification:  Seville, 8 May 2020
 
 #### SETTINGS ####
 
