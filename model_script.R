@@ -20,7 +20,7 @@ library(scales)     # idem
 rm(list=ls())
 
 # working directory
-setwd("~/OneDrive - Universidade do Algarve/Trabajo/Working/2020/elevation/wordir/model/")
+setwd("~/OneDrive - Universidade do Algarve/02_projects/02_RIAVALUE/07_elevation_carbon_sequestration/estimatehydroperiod")
 
 # theme
 default <- theme(plot.background=element_blank()) +
@@ -45,15 +45,15 @@ default <- theme(plot.background=element_blank()) +
 #### INPUT - POINTS ####
 
 # load data from master file
-data.poi <- data.frame(read_excel("./inputs/model_inputs.xlsx",sheet="points"))
-
-# save data in csv (long-term data storage)
-write.csv(data.poi,"./inputs/data_points.csv")
+data.poi <- read.csv("./inputs/data_points.csv")
 
 #### INPUT - HEIGHTS ####
 
 # load data (contains tide heights from official charts)
-data.hei <- data.frame(read_excel("./inputs/model_inputs.xlsx",sheet="heights"))
+data.hei <- read.csv("./inputs/data_heights.csv")
+data.hei$datetime <- as.POSIXct(
+  data.hei$datetime,
+  tz = "UTC")
 
 # check structure
 str(data.hei)
@@ -75,10 +75,10 @@ data.hei$timeh <- data.hei$timemin/60
 
 # check
 table(data.hei$tide,useNA="ifany")
-ggplot(data.hei,aes(x=timeh,y=height)) + geom_point(size=0.8,colour="blue") + geom_line()
+ggplot(data.hei,aes(x=timeh,y=height)) +
+  geom_point(size=0.8,colour="blue") + 
+  geom_line()
 
-# save data in csv (long-term data storage)
-write.csv(data.hei,"./inputs/data_heights.csv")
 
 #### MODEL-Part 1: CALCULATION INTERPOLATED TIDE HEIGHT ####
 # the goal is to interpolate tide heights at 1-min intervals using low/high tide charts.
@@ -95,8 +95,22 @@ data.int$timemin <- as.numeric(data.int$datetime)/60
 data.int$timemin <- data.int$timemin-as.numeric(as.POSIXct("2017-03-01 00:00",tz="UTC"))/60
 data.int <- merge(data.int,data.hei,all.x=T)
 
+# correction term for sea level rise since hydrographic zero was set
+# approximately 10 cm 
+tide.corr <- 0.1
+
 # for each time event (t), i.e. row in data.int, identify previous/posterior tide event (time, height)
-DATA.INT <- data.frame()
+
+DATA.INT <- data.frame(
+  "datetime"   = POSIXct(length = nrow(data.int)),
+  "timemin"    = numeric(length = nrow(data.int)),
+  "prev_event" = character(length = nrow(data.int)),
+  "prev_time"  = numeric(length = nrow(data.int)),
+  "prev_height"= numeric(length = nrow(data.int)) ,
+  "post_event" = character(length = nrow(data.int)),
+  "post_time"  = numeric(length = nrow(data.int)),
+  "post_height"= numeric(length = nrow(data.int))
+)
 
 for (i in 1:nrow(data.int)){
   
@@ -105,34 +119,29 @@ for (i in 1:nrow(data.int)){
   
   # get info previous event
   prev_event <- data.hei[data.hei$timemin <= data$timemin,]
-  prev_event <- prev_event[prev_event$timemin==max(prev_event$timemin),]
+  prev_event <- prev_event[which.max(prev_event$timemin),]
   
   # get info posterior event
   post_event <- data.hei[data.hei$timemin >= data$timemin,]
-  post_event <- post_event[post_event$timemin==min(post_event$timemin),]
+  post_event <- post_event[which.min(post_event$timemin),]
   
   # add info to data
-  data <- data.frame(datetime    = data$datetime,
-                     timemin     = data$timemin,
-                     
-                     prev_event  = prev_event$tide,
-                     prev_time   = prev_event$timemin,
-                     prev_height = prev_event$height,
-                     
-                     post_event  = post_event$tide,
-                     post_time   = post_event$timemin,
-                     post_height = post_event$height)
-  
-  # bind data
-  DATA.INT <- rbind(DATA.INT,data)
-  
+  DATA.INT[i, ] <- data.frame(data$datetime,
+                     data$timemin,
+                     prev_event$tide,
+                     prev_event$timemin,
+                     prev_event$height + tide.corr,
+                     post_event$tide,
+                     post_event$timemin,
+                     post_event$height + tide.corr)
+
 }
 
 # replace
 data.int <- DATA.INT
 
 # clean
-rm(i,DATA.INT,data,post_event,prev_event)
+rm(i,DATA.INT,post_event,prev_event)
 
 # calculate parameters for each point
 data.int$par_T <- data.int$post_time-data.int$prev_time   # time (min) between closest event
@@ -160,7 +169,7 @@ data.int <- data.int[data.int$month==3,]
 data.int <- data.int[c("datetime","day","timemin","timeh","height")]
 
 # check plot (only March)
-pdf("./inputs/plots_heights_chart_interpolated.pdf",onefile=TRUE,paper="a4")
+pdf("./outputs/plots_heights_chart_interpolated.pdf",onefile=TRUE,paper="a4")
 ggplot(data.int,aes(x=timeh,y=height)) +
   geom_point(size=0.3) +
   geom_point(data=data.hei[data.hei$month==3,],
@@ -169,7 +178,7 @@ ggplot(data.int,aes(x=timeh,y=height)) +
 dev.off()
 
 # save
-write.csv(data.int,"./inputs/data_heights_interpolated.csv")
+write.csv(data.int,"./outputs/data_heights_interpolated.csv")
 
 #### MODEL-Part 2: CALCULATIONS DEPTHS and HYDROPERIODS ####
 # at each point p and time t, I want to estimate the water depth d
@@ -180,7 +189,7 @@ write.csv(data.int,"./inputs/data_heights_interpolated.csv")
     # e(p) is the elevation, in meters, referred to MSL at point p
 
 # load data
-data.int <- read.csv("./inputs/data_heights_interpolated.csv")
+data.int <- read.csv("./outputs/data_heights_interpolated.csv")
 data.hei <- read.csv("./inputs/data_heights.csv")
 data.poi <- read.csv("./inputs/data_points.csv")
 
@@ -267,9 +276,7 @@ for (i in 1:length(points)){
   
   ## CALCULATE SAMPLING DAYS HYDROPERIOD
     # select days = c(28,29,30)
-    subset <- data.dep[data.dep$day==28 |
-                       data.dep$day==29 |
-                       data.dep$day==30,]
+    subset <- data.dep[data.dep$day %in% c(28, 29, 30),]
     
     # create table
     table.sam     <- data.poi[i,]
@@ -283,7 +290,7 @@ for (i in 1:length(points)){
     
     # bind data
     TABLE.SAM <- rbind(TABLE.SAM,table.sam)
-  
+
 }
 
 # rename
@@ -360,7 +367,9 @@ rm(table,table.mon,table.day)
 
 ## DATA OBSERVED
 # load data
-data.obs <- data.frame(read_excel("./inputs/model_inputs.xlsx",sheet="depths"))
+# file missing
+data.obs <- read.csv("./inputs/data_depths.csv")
+data.obs$datetime <- as.POSIXct(data.obs$datetime, tz = "UTC")
 
 # know start/end time
 data.obs$datetime[1]
@@ -411,7 +420,7 @@ fig_s2 <- ggplot(data.com,aes(x=datetime,y=depth,colour=set)) +
   theme(axis.text.x=element_text(colour="black",size=10,angle=90))
 fig_s2
 
-svg(file="~/OneDrive - Universidade do Algarve/Trabajo/Working/2020/elevation/wordir/plots/plot_fig_s2.svg",
+svg(file="outputs/plot_fig_s2.svg",
     width=8,height=5)
 grid.arrange(fig_s2,top="")
 dev.off()
