@@ -1,8 +1,7 @@
 #### METADATA ####
-# Objective:          Estimate water depth and hydroperiod at a point of known elevation
-# Author:             Carmen B. de los Santos - cbsantos@ualg.pt
+# Objective:          Estimate water depth and hydroperiod at a point of known elevation in the Ria Formosa lagoon
+# Authors:            Carmen B. de los Santos, with contributions by Márcio Martins
 # Creation:           Seville, 27 March 2020
-# Last modification:  Seville, 8 May 2020
 
 #### SETTINGS ####
 
@@ -40,16 +39,15 @@ default <- theme(plot.background=element_blank()) +
   theme(legend.text.align=0) +
   theme(plot.title=element_text(size=16,face="bold"))
 
-
 #### ------------------------------ MODEL -----------------------------------####
 #### INPUT - POINTS ####
 
-# load data from master file
+# load data (points of known elevation)
 data.poi <- read.csv("./inputs/data_points.csv")
 
 #### INPUT - HEIGHTS ####
 
-# load data (contains tide heights from official charts)
+# load data (tide heights from official charts)
 data.hei <- read.csv("./inputs/data_heights.csv")
 data.hei$datetime <- as.POSIXct(
   data.hei$datetime,
@@ -78,7 +76,6 @@ table(data.hei$tide,useNA="ifany")
 ggplot(data.hei,aes(x=timeh,y=height)) +
   geom_point(size=0.8,colour="blue") + 
   geom_line()
-
 
 #### MODEL-Part 1: CALCULATION INTERPOLATED TIDE HEIGHT ####
 # the goal is to interpolate tide heights at 1-min intervals using low/high tide charts.
@@ -367,7 +364,6 @@ rm(table,table.mon,table.day)
 
 ## DATA OBSERVED
 # load data
-# file missing
 data.obs <- read.csv("./inputs/data_depths.csv")
 data.obs$datetime <- as.POSIXct(data.obs$datetime, tz = "UTC")
 
@@ -383,7 +379,7 @@ data.obs$datetime[1]
 data.obs$datetime[nrow(data.obs)]
 
 ## DATA MODEL
-# select points Zn3_0 and Zn3_30 in data.dep
+# select points Zn3_0 and Zn3_30 in data.dep (points at which the pressure loggers were installed on the 2017-03-30)
 data.mod <- data.dep[data.dep$point=="Zn3_0" | data.dep$point=="Zn3_30",]
 
 # select 24 hours ("2017-03-30 09:30:00 UTC" to "2017-03-31 09:30:00 UTC")
