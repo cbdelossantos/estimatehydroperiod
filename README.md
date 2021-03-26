@@ -21,5 +21,5 @@ b)	table_hydroperiod_daily.csv: Dataset with daily hydroperiod at each point of 
 c)	table_hydroperiod_monthly.csv: Dataset with monthly hydroperiod at each point of known elevation over the specific time period.       
 d)	plots_hydroperiod_days.pdf: Plots showing the tide height over time (separated by day) for the specific time period and per point. Each daily plot includes the time (h) of the day during which the point is emerged (E).       
 
-6.	Validation and calibration.     
+6.	Validation.     
 The modelled water depth was validated against field measurements of water depth at two points along the transect at site S3 (sampling points at 0 and 30 m) over two tidal cycles (28-29th March 2017). Water depth was measured with pressure transducers (Solinst ® Levelogger and In-Situ level troll) measuring at 4 Hz, after correction with their elevation from the bed. The data for the validation is found in the file data_depth.csv in the folder inputs. 
