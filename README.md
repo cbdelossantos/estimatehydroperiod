@@ -11,7 +11,7 @@ First, the model interpolates, at intervals of 1 min and for a month, the tidal 
 
 4.	Inputs.    
 The model requires two datasets as inputs:        
-a)	data_tide.csv: Dataset with time and tide heights over a certain period of time for daily low and high tides. This is a csv file with three columns: datetime (YYYY-MM-DD, HH:MM), height (in m, referred to MSL), tide (factor with two levels: “low” and “high”). Note: the dataset must contain a row with the last tide of the previous month and the first tide of the following month.           
+a)	data_heights.csv: Dataset with time and tide heights over a certain period of time for daily low and high tides. This is a csv file with three columns: datetime (YYYY-MM-DD, HH:MM), height (in m, referred to MSL), tide (factor with two levels: “low” and “high”). Note: the dataset must contain a row with the last tide of the previous month and the first tide of the following month. The model generates another csv file (data_heights_interpolated.csv) with the tide heights at 1-min intervals.              
 b)	data_points.csv: Dataset with points at which hydroperiod will be calculated. This is a csv file with at least two columns: point (unique id), elevation (in m, referred to MSL). It may contain other columns with information about those points (e.g. site, transect, habitat, waypoint, latitude, longitude).           
 
 5.	Outputs.     
