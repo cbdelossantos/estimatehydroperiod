@@ -1,4 +1,4 @@
-code,point,datetime_recorded,time zone,datetime,raw_depth,corrected_depth,depth
+code,point,datetime_recorded,time_zone,datetime,raw_depth,corrected_depth,depth
 depth2,Zn3_0,2017-03-30 10:30:00,WEST,2017-03-30 09:30:00,0.01367,-0.09633,0.00
 depth2,Zn3_0,2017-03-30 10:31:00,WEST,2017-03-30 09:30:59,0.01017,-0.09983,0.00
 depth2,Zn3_0,2017-03-30 10:32:00,WEST,2017-03-30 09:32:00,0.01442,-0.09558,0.00
