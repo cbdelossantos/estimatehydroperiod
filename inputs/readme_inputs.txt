@@ -1,6 +1,6 @@
 data_heights.csv
-.
-- Source: Insituto Hidrogr·fico de Portugal (https://www.hidrografico.pt/).
+
+- Source: Insituto Hidrogr√°fico de Portugal (https://www.hidrografico.pt/).
 - Data for March 2017, Faro-Olhao.
 - Column height referenced to mean sea level (m MSL).
 - Column height_zh referenced to hydrographic zero (m HZ).
@@ -24,10 +24,10 @@ Data used for the validation of the model.
 - Column code: code for the transducer (PT2 and PT3 deployed at S3).
 - Column point: ID of the point at which water level was measured: PT2 was placed at the lowest limit of the Zn bed (X: 22606.611 m Y: -296418.856 m E: -1.421 m) AND PT3 was placed at 30 m upwards from PT2 (X: 22577.854 m Y: -296410.770 m E: -0.596 m).
 - Column datetime_recorded: date and time of the observation as recorded.
-- Column time_zone: time zone for the datetime_recorded, “hora de verão de GMT” (i.e. WEST = UTC +1).
+- Column time_zone: time zone for the datetime_recorded, √íhora de ver‚Äπo de GMT√ì (i.e. WEST = UTC +1).
 - Column datetime: date and time of the observation in UTC.
 - Column raw_depth: water level measured with pressure transducers, referred to mean sea level (MSL, m).
-- Column corrected_depth: water level measured with pressure transducers after correction, referred to mean sea level (MSL, m): depth corrected (PT2) – correction – 11 cm, depth corrected (PT3) – correction – 10 cm.
+- Column corrected_depth: water level measured with pressure transducers after correction, referred to mean sea level (MSL, m): depth corrected (PT2) √ê correction √ê 11 cm, depth corrected (PT3) √ê correction √ê 10 cm.
 - Column depth: corrected water level after negative values were levelled to zero.
 
 
