@@ -12,8 +12,8 @@ packages <- c("readxl",       # to read xlsx
               "reshape2",     # to shape data
               "ggplot2",      # for graphing
               "grid",         # for graphing
-              "gridExtra",    # for graphing
-              "scales")       # for graphing
+              "gridExtra")    # for graphing
+             
 for (i in seq_along(packages)) {
   if(!do.call(require, list(package = packages[i]))) {
     do.call(install.packages, list(pkgs = packages[i]))
@@ -51,16 +51,22 @@ default <- theme(plot.background=element_blank()) +
 # load data (points of known elevation)
 data.poi <- read.csv("./inputs/data_points.csv")
 
+# check structure
+str(data.poi)
+
 #### INPUT - HEIGHTS ####
 
 # load data (tide heights from official charts)
 data.hei <- read.csv("./inputs/data_heights.csv")
 
-# date settings (must be UTC)
-data.hei$datetime <- as.POSIXct(data.hei$datetime, tz = "UTC")
-
 # check structure
 str(data.hei)
+
+# select data
+data.hei <- data.hei[, c("datetime", "height", "tide")]
+
+# date settings (must be UTC)
+data.hei$datetime <- as.POSIXct(data.hei$datetime, tz = "UTC")
 
 # calculate minutes from first date
 data.hei$timemin <- as.numeric(data.hei$datetime)/60
@@ -72,7 +78,7 @@ data.hei$month <- month(data.hei$datetime)
 data.hei$timeh <- data.hei$timemin/60
 
 # check
-table(data.hei$tide,useNA="ifany")
+table(data.hei$tide, useNA="ifany")
 ggplot(data.hei,aes(x = timeh, y = height)) +
   geom_point(size = 0.8, colour = "blue") + 
   geom_line()
@@ -139,11 +145,11 @@ for (i in 1:nrow(data.int)){
 data.int <- DATA.INT
 
 # clean
-rm(i,DATA.INT,post_event,prev_event)
+rm(i, DATA.INT, post_event, prev_event)
 
 # calculate parameters for each point
 data.int$par_T <- data.int$post_time-data.int$prev_time   # time (min) between closest event
-data.int$par_t <- data.int$timemin - data.int$prev_time   # time (min) from previous event
+data.int$par_t <- data.int$timemin-data.int$prev_time     # time (min) from previous event
 
 # calculate estimated height using analitical formula
 data.int$height <- with(data.int,ifelse(prev_event == post_event,prev_height,
@@ -152,7 +158,7 @@ data.int$height <- with(data.int,ifelse(prev_event == post_event,prev_height,
 # select columns
 data.int <- data.int[,c("datetime", "timemin", "height")]
 
-# check time
+# check time (must be UTC)
 data.int$datetime[[1]] 
 
 # add column day, month, time in hours
@@ -172,7 +178,7 @@ ggplot(data.int,aes(x = timeh, y = height)) +
   geom_point(size = 0.3) +
   geom_point(data = data.hei[data.hei$month == 3,],
              aes(x = timeh, y = height),colour = "red", shape = 21) +
-  facet_wrap(.~day,scales = "free_x")
+  facet_wrap(. ~ day,scales = "free_x")
 dev.off()
 
 # save
@@ -186,12 +192,12 @@ write.csv(data.int,"./outputs/data_heights_interpolated.csv")
     # h(t) is the tidal height, in meters, referred to MSL at time t
     # e(p) is the elevation, in meters, referred to MSL at point p
 
-# load data
-data.int <- read.csv("./outputs/data_heights_interpolated.csv")
-data.hei <- read.csv("./inputs/data_heights.csv")
-data.poi <- read.csv("./inputs/data_points.csv")
+# it requires datasets: data.int, data.hei and data.poi (already in the global environment)
+# data.int <- read.csv("./outputs/data_heights_interpolated.csv")
+# data.hei <- read.csv("./inputs/data_heights.csv")
+# data.poi <- read.csv("./inputs/data_points.csv")
 
-# preparations for loop
+# preparations for the loop
 pdf("./outputs/plots_hydroperiod_days.pdf", onefile=TRUE, paper = "a4")
 par(mfrow = c(3, 3), pty = "s", las = 1, oma = c(1, 1, 1, 1), mar = c(5, 5, 3, 1))
 
@@ -213,8 +219,8 @@ for (i in 1:length(points)){
   data.dep           <- data.int                                 # h(t)
   data.dep$elevation <- table.mon$elevation                      # e(p)
   data.dep$depth     <- with(data.dep,                           # d(p,t) 
-                             ifelse(height > elevation,
-                                    height - elevation,
+                             ifelse(height>elevation,
+                                    height-elevation,
                                     0))         
 
   # add info point to data.dep
@@ -294,80 +300,37 @@ for (i in 1:length(points)){
 }
 
 # rename
-table.mon <- TABLE.MON # table with montly hydroperiod at each point (n = 58)
-table.day <- TABLE.DAY # table with daily hydroperiod at each point and day (n = 58*31)
-table.sam <- TABLE.SAM # table with daily hydroperiod at each point from 28 to 30 March (n = 58*3)
-data.dep  <- DATA.DEP  # data with depth at each point and minute over a month (n = 58*31*1440)
+table.mon <- TABLE.MON # table with montly hydroperiod at each point (n = 40)
+table.day <- TABLE.DAY # table with daily hydroperiod at each point and day (n = 40*31)
+table.sam <- TABLE.SAM # table with daily hydroperiod at each point from 28 to 30 March (n = 40*3)
+data.dep  <- DATA.DEP  # dataset with depth at each point and minute over a month (n = 40*31*1440)
 
 # manage data
-data.dep$datetime <- as.POSIXct(data.dep$datetime,format="%Y-%m-%d %H:%M:%S",tz="UTC")
+data.dep$datetime <- as.POSIXct(data.dep$datetime, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 data.dep$datetime[[1]]
 
 # clean
-rm(i,j,points,data.poi,data.hei,subset,TABLE.MON,TABLE.DAY,TABLE.SAM,DATA.DEP)
+rm(i, j, points, data.poi, data.hei, subset, TABLE.MON, TABLE.DAY, TABLE.SAM, DATA.DEP)
 dev.off()
 dev.off()
 
 # save data in csv (long-term data storage)
-write.csv(table.mon,"./outputs/table_hydroperiod_monthly.csv")
-write.csv(table.day,"./outputs/table_hydroperiod_daily.csv")
-write.csv(table.sam,"./outputs/table_hydroperiod_sampling_days.csv")
-write.csv(data.dep,"./outputs/data_depths_minute.csv")
-
-#### MODEL-Part 3: VISUALISATION ####
-
-# correlation elevation - montly hydroperiod
-ggplot(table.mon,aes(x=elevation,y=hydroperiod_hmon)) + 
-  geom_point(aes(colour=habitat),shape=21) +
-  # geom_smooth(method="lm",se=F) +
-  scale_x_continuous("Elevation (m, MSL)") +
-  scale_y_continuous("Hydroperiod (hours month-1)") +
-  facet_wrap(~habitat)
-
-ggplot(table.mon,aes(x=elevation,y=hydroperiod_mperc)) + 
-  geom_point(aes(colour=habitat),shape=21) +
-  # geom_smooth(method="lm",se=F) +
-  scale_x_continuous("Elevation (m, MSL)") +
-  scale_y_continuous("Hydroperiod (% month)",limits=c(0,100),breaks=c(seq(0,100,25))) +
-  facet_wrap(~habitat)
-
-# hydroperiod over month
-table <- table.day[table.day$site=="S1",]
-ggplot(table,aes(x=day,y=hydroperiod_hday,colour=point)) +
-  geom_point(size=0.2) + geom_line() +
-  scale_x_continuous("Day (March 2017)") +
-  scale_y_continuous("Hydroperiod (hours day-1)") +
-  facet_wrap(~transect)
-
-table <- table.day[table.day$site=="S2",]
-ggplot(table,aes(x=day,y=hydroperiod_hday,colour=point)) +
-  geom_point(size=0.2) + geom_line() +
-  scale_x_continuous("Day (March 2017)") +
-  scale_y_continuous("Hydroperiod (hours day-1)") +
-  facet_wrap(~transect)
-
-table <- table.day[table.day$site=="S3",]
-ggplot(table,aes(x=day,y=hydroperiod_hday,colour=point)) +
-  geom_point(size=0.2) + geom_line() +
-  scale_x_continuous("Day (March 2017)") +
-  scale_y_continuous("Hydroperiod (hours day-1)") +
-  facet_wrap(~transect)
-  
-table <- table.day[table.day$site=="S4",]
-ggplot(table,aes(x=day,y=hydroperiod_hday,colour=point)) +
-  geom_point(size=0.2) + geom_line() +
-  scale_x_continuous("Day (March 2017)") +
-  scale_y_continuous("Hydroperiod (hours day-1)") +
-  facet_wrap(~transect)
-
-rm(table,table.mon,table.day)
+write.csv(table.mon, "./outputs/table_hydroperiod_monthly.csv")
+write.csv(table.day, "./outputs/table_hydroperiod_daily.csv")
+write.csv(table.sam, "./outputs/table_hydroperiod_sampling_days.csv")
+write.csv(data.dep, "./outputs/data_depths_minute.csv")
 
 #### ------------------------------ VALIDATION ------------------------------####
-#### COMPARISON DEPTHS  ####
+#### COMPARISON OBSERVED vs MODELLED  ####
 
 ## DATA OBSERVED
 # load data
 data.obs <- read.csv("./inputs/data_depths.csv")
+
+# check structure
+str(data.obs)
+
+# date settings (must be UTC)
 data.obs$datetime <- as.POSIXct(data.obs$datetime, tz = "UTC")
 
 # know start/end time
@@ -375,7 +338,7 @@ data.obs$datetime[1]
 data.obs$datetime[nrow(data.obs)]
 
 # select 24 hours ("2017-03-30 09:30:00 UTC" to "2017-03-31 09:30:00 UTC")
-data.obs <- data.obs[data.obs$datetime<as.POSIXct("2017-03-31 09:31:00",tz="UTC"),]
+data.obs <- data.obs[data.obs$datetime<as.POSIXct("2017-03-31 09:31:00", tz = "UTC"),]
 
 # check start/end time
 data.obs$datetime[1]
@@ -386,48 +349,47 @@ data.obs$datetime[nrow(data.obs)]
 data.mod <- data.dep[data.dep$point=="Zn3_0" | data.dep$point=="Zn3_30",]
 
 # select 24 hours ("2017-03-30 09:30:00 UTC" to "2017-03-31 09:30:00 UTC")
-data.mod <- data.mod[data.mod$datetime>=as.POSIXct("2017-03-30 09:30:00",tz="UTC"),]
-data.mod <- data.mod[data.mod$datetime<=as.POSIXct("2017-03-31 09:30:00",tz="UTC"),]
+data.mod <- data.mod[data.mod$datetime>=as.POSIXct("2017-03-30 09:30:00", tz = "UTC"),]
+data.mod <- data.mod[data.mod$datetime<=as.POSIXct("2017-03-31 09:30:00", tz = "UTC"),]
 
 # check start/end time
 data.mod$datetime[1]
 data.mod$datetime[nrow(data.mod)]
 
 # check
-ggplot(data.mod,aes(x=datetime,y=depth)) +
+ggplot(data.mod,aes(x = datetime,y = depth)) +
   geom_line() +
-  facet_wrap(~point)
+  facet_wrap(~ point)
 
-ggplot(data.obs,aes(x=datetime,y=depth)) +
+ggplot(data.obs,aes(x = datetime, y = depth)) +
   geom_line() +
-  facet_wrap(~point)
+  facet_wrap(~ point)
 
 ## COMPARE DATA
 # define subset mod to merge
-subset.mod <- data.mod[,c("point","datetime","depth")]
+subset.mod <- data.mod[,c("point", "datetime", "depth")]
 subset.mod$set <- "model"
-subset.obs <- data.obs[,c("point","datetime","depth")]
+subset.obs <- data.obs[,c("point", "datetime", "depth")]
 subset.obs$set <- "observed"
-data.com <- rbind(subset.obs,subset.mod)
-rm(subset.mod,subset.obs)
+data.com <- rbind(subset.obs, subset.mod)
+rm(subset.mod, subset.obs)
 
-# plot comaprison depths model-field
-fig_s2 <- ggplot(data.com,aes(x=datetime,y=depth,colour=set)) +
+# plot comparison depths modelled vs observed
+fig_s2 <- ggplot(data.com,aes(x = datetime, y = depth, colour = set)) +
   geom_line() +
-  facet_wrap(~point) +
+  facet_wrap(~ point) +
   default +
-  theme(axis.text.x=element_text(colour="black",size=10,angle=90))
+  theme(axis.text.x = element_text(colour = "black", size = 10, angle = 90))
 fig_s2
 
-svg(file="outputs/plot_fig_s2.svg",
-    width=8,height=5)
-grid.arrange(fig_s2,top="")
+svg(file = "outputs/plot_fig_s2.svg", width = 8, height = 5)
+grid.arrange(fig_s2, top = "")
 dev.off()
 
 #### COMPARISON HYDROPERIOD ####
 
 # set loop to calculate daily hydroperiod (hours day-1)
-data.com$set_point <- with(data.com,paste0(set,"_",point))
+data.com$set_point <- with(data.com,paste0(set, "_", point))
 set_points         <- unique(data.com$set_point)
 table.com          <- data.frame()
 
@@ -442,17 +404,17 @@ for(i in 1:length(set_points)){
                       point              = unique(data$point),
                       hydroperiod_hday   = nrow(data[data$depth>0,])/60)
   
-  table.com <- rbind(table.com,table)
+  table.com <- rbind(table.com, table)
 }
 
 table.com
 
 # clean
-rm(i,set_points,data,table,data.obs,data.mod)
+rm(i, set_points, data, table, data.obs, data.mod)
 
 # plot
-ggplot(table.com,aes(x=point,y=hydroperiod_hday,fill=set)) +
-  geom_col(position=position_dodge())
+ggplot(table.com, aes(x = point, y = hydroperiod_hday, fill = set)) +
+  geom_col(position = position_dodge())
 
 # clean
 rm(table.com)
