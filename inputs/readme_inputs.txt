@@ -27,7 +27,7 @@ Data used for the validation of the model.
 - Column time_zone: time zone for the datetime_recorded, Òhora de ver‹o de GMTÓ (i.e. WEST = UTC +1).
 - Column datetime: date and time of the observation in UTC.
 - Column raw_depth: water level measured with pressure transducers, referred to mean sea level (MSL, m).
-- Column corrected_depth: water level measured with pressure transducers after correction, referred to mean sea level (MSL, m): depth corrected (PT2) Ð correction Ð 11 cm, depth corrected (PT3) Ð correction Ð 10 cm.
+- Column corrected_depth: water level measured with pressure transducers after correction, referred to mean sea level (MSL, m): PT2 correction - 11 cm, PT3 correction - 10 cm.
 - Column depth: corrected water level after negative values were levelled to zero.
 
 
