@@ -382,8 +382,9 @@ plot <- ggplot(data.com,aes(x = datetime, y = depth, colour = set)) +
   theme(axis.text.x = element_text(colour = "black", size = 10, angle = 90))
 plot
 
-svg(file = "./outputs/plot_validation.svg", width = 8, height = 5)
-grid.arrange(plot, top = "")
+pdf(file="~/OneDrive - Universidade do Algarve/Trabajo/STUDIES/wip/elevation/wordir/model/outputs/plot_validation.pdf",
+    width=7,height=4)
+grid.arrange(plot,top="")
 dev.off()
 
 #### COMPARISON HYDROPERIOD ####
