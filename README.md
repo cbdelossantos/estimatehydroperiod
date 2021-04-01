@@ -9,7 +9,7 @@ First, the model interpolates, at intervals of 1 min and for a month, the tidal 
 
 ## 4. Inputs.    
 The model requires two datasets as inputs:        
-*	**data_heights.csv**: Dataset with time and tide heights over a certain period of time for daily low and high tides. This is a csv file with three columns: datetime (YYYY-MM-DD, HH:MM), height (in m, referred to MSL), tide (factor with two levels: “low” and “high”). Note: the dataset must contain a row with the last tide of the previous month and the first tide of the following month. The model generates another csv file (data_heights_interpolated.csv) with the tide heights at 1-min intervals.              
+*	**data_heights.csv**: Dataset with time and tide heights over a certain period of time for daily low and high tides. This is a csv file with three columns: datetime (YYYY-MM-DD, HH:MM), height (in m, referred to MSL), tide (factor with two levels: “low” and “high”). Note: the dataset must contain a row with the last tide of the previous month and the first tide of the following month. The model generates another csv file (**data_heights_interpolated.csv**) and pdf file (**plots_heights_chart_interpolated.pdf**) with the tide heights at 1-min intervals.              
 *	**data_points.csv**: Dataset with points at which hydroperiod will be calculated. This is a csv file with at least two columns: point (unique id), elevation (in m, referred to MSL). It may contain other columns with information about those points (e.g. site, transect, habitat, waypoint, latitude, longitude).           
 
 ## 5. Outputs.     
@@ -21,7 +21,7 @@ The model script generates the following outputs:
 *	**plots_hydroperiod_days.pdf**: Plots showing the tide height over time (separated by day) for the specific time period and per point. Each daily plot includes the time (h) of the day during which the point is emerged (E).       
 
 ## 6.	Validation.     
-The modelled water depth was validated against field measurements of water depth at two points along the transect at site S3 (sampling points at 0 and 30 m) over two tidal cycles (28-29th March 2017). Water depth was measured with pressure transducers (Solinst ® Levelogger and In-Situ level troll) measuring at 4 Hz, after correction with their elevation from the bed. The data for the validation is found in the file data_depth.csv in the folder inputs. 
+The modelled water depth was validated against field measurements of water depth at two points along the transect at site S3 (sampling points at 0 and 30 m) over two tidal cycles (28-29th March 2017). Water depth was measured with pressure transducers (Solinst ® Levelogger and In-Situ level troll) measuring at 4 Hz, after correction with their elevation from the bed. The data for the validation is found in the file **data_depth.csv** in the folder inputs. 
 
 **Table 1.** Entities used in the model.
 
