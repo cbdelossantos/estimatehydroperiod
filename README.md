@@ -35,6 +35,6 @@ The modelled water depth was validated against field measurements of water depth
 | Hydroperiod |	hyd<sub>p</sub>	| h month-1 OR h day-1 | Cumulative time (h) during which a point _p_ is covered by water over a month or for a day. |
 | Hydroperiod interval	| int	| min	| Time interval used for the calculation of the hydroperiod. This is the precision. Set at 1 minute. |
 
-**Figure 1. Scheme of the deterministic model to estimate water depth (d<sub>p,t</sub>) at point _p_ and time _t_, when its elevation (e<sub>p</sub>) and tidal height (h<sub>t</sub>) at time _t_ are known.**
+**Figure 1.** Scheme of the deterministic model to estimate water depth (d<sub>p,t</sub>) at point _p_ and time _t_, when its elevation (e<sub>p</sub>) and tidal height (h<sub>t</sub>) at time _t_ are known.
 ![Figure 1](/figure_1.jpg)
 
