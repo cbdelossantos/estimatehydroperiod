@@ -21,7 +21,7 @@ The model script generates the following outputs:
 *	**plots_hydroperiod_days.pdf**: Plots showing the tide height over time (separated by day) for the specific time period and per point. Each daily plot includes the time (h) of the day during which the point is emerged (E).       
 
 ## 6.	Validation.     
-The modelled water depth was validated against field measurements of water depth at two points along the transect at site S3 (sampling points at 0 and 30 m) over two tidal cycles (28-29th March 2017). Water depth was measured with pressure transducers (Solinst ® Levelogger and In-Situ level troll) measuring at 4 Hz, after correction with their elevation from the bed. The data for the validation is found in the file **data_depth.csv** in the folder inputs. 
+The modelled water depth was validated against field measurements of water depth at two points along the transect at site S3 (sampling points at 0 and 30 m) over two tidal cycles (30 and 31 March 2017). Water depth was measured with pressure transducers (Solinst ® Levelogger and In-Situ level troll) measuring at 4 Hz, after correction with their elevation from the bed. The data for the validation is found in the file **data_depth.csv** in the folder inputs. 
 
 **Table 1.** Entities used in the model.
 
@@ -37,4 +37,7 @@ The modelled water depth was validated against field measurements of water depth
 
 **Figure 1.** Scheme of the deterministic model to estimate water depth (d<sub>p,t</sub>) at point _p_ and time _t_, when its elevation (e<sub>p</sub>) and tidal height (h<sub>t</sub>) at time _t_ are known.
 ![Figure 1](/figure_1.jpg)
+
+**Figure 2.** Modelled vs observed water depths at two points (Zn3_0 and Zn3_30) of the iintertidal area at the Ria Formosa lagoon for two days in March 2017.
+![Figure 2](/figure_2.jpg)
 
