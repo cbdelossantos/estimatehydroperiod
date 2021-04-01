@@ -29,10 +29,10 @@ The modelled water depth was validated against field measurements of water depth
 | --- | --- | --- | --- |
 | Point	| p	| -	| Location for which bed elevation is known. Subscript. |
 | Time	| t	| YYYY-MM-DD HH:MM	| Defined time at which water depth for point _p_ to be determined. Subscript. |
-| Bed elevation |	e<sub>p</sub>	| m MSL |	[INPUT] Distance from the bed to the datum at point _p_. Obtained from in situ measurements with a dGPS. |
-| Tide height	| h<sub>t</sub>	| m MSL |[INPUT] Distance from the water surface to the datum at time _t_. Obtained from official tide charts. |
-| Water depth	| d<sub>p,t</sub>	| m	| [OUTPUT] Distance from the water surface to the bottom at time _t_ and at point _p_. |
-| Hydroperiod |	hyd<sub>p</sub>	| h month-1 OR h day-1 |[OUTPUT] Cumulative time (h) during which a point _p_ is covered by water over a month or for a day. |
+| Bed elevation |	e<sub>p</sub>	| m MSL |	Distance from the bed to the datum at point _p_. Obtained from in situ measurements with a dGPS. |
+| Tide height	| h<sub>t</sub>	| m MSL |Distance from the water surface to the datum at time _t_. Obtained from official tide charts. |
+| Water depth	| d<sub>p,t</sub>	| m	| Distance from the water surface to the bottom at time _t_ and at point _p_. |
+| Hydroperiod |	hyd<sub>p</sub>	| h month-1 OR h day-1 | Cumulative time (h) during which a point _p_ is covered by water over a month or for a day. |
 | Hydroperiod interval	| int	| min	| Time interval used for the calculation of the hydroperiod. This is the precision. Set at 1 minute. |
 
 **Figure 1. Scheme of the deterministic model to estimate water depth (d<sub>p,t</sub>) at point _p_ and time _t_, when its elevation (e<sub>p</sub>) and tidal height (h<sub>t</sub>) at time _t_ are known.**
