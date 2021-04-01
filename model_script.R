@@ -375,15 +375,15 @@ data.com <- rbind(subset.obs, subset.mod)
 rm(subset.mod, subset.obs)
 
 # plot comparison depths modelled vs observed
-fig_s2 <- ggplot(data.com,aes(x = datetime, y = depth, colour = set)) +
+plot <- ggplot(data.com,aes(x = datetime, y = depth, colour = set)) +
   geom_line() +
   facet_wrap(~ point) +
   default +
   theme(axis.text.x = element_text(colour = "black", size = 10, angle = 90))
-fig_s2
+plot
 
-svg(file = "outputs/plot_fig_s2.svg", width = 8, height = 5)
-grid.arrange(fig_s2, top = "")
+svg(file = "./outputs/plot_validation.svg", width = 8, height = 5)
+grid.arrange(plot, top = "")
 dev.off()
 
 #### COMPARISON HYDROPERIOD ####
